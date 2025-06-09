@@ -17,7 +17,11 @@
 
 ## 📸 Demo
 
-> _Add a screenshot or screen recording here for better context_
+## 📷 Demo
+
+![Snip URL Home Page - Screenshot](static\images\Screenshot1.png)
+![Snip URL Main Page - Screenshot](static\images\Screenshot2.png)
+![Snip URL Result Page - Screenshot](static\images\Screenshot3.png)
 
 ---
 
