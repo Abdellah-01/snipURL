@@ -78,7 +78,8 @@
             color: var(--dark);
         }
 
-        input[type="url"] {
+        input[type="url"],
+        input[type="text"] {
             padding: 1rem;
             border: 1px solid #000000;
             border-radius: 0;
@@ -86,7 +87,8 @@
             transition: all 0.3s ease;
         }
 
-        input[type="url"]:focus {
+        input[type="url"]:focus,
+        input[type="text"]:focus {
             border-color: var(--primary-light);
             outline: none;
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
@@ -230,6 +232,16 @@
             width: 100%;
         }
 
+        .input-group small {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: -0.3rem;
+        }
+
+        #custom_id {
+            margin-top: 0.5rem;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 1.5rem;
@@ -259,6 +271,11 @@
                 <label for="long_url">Enter your long URL</label>
                 <input type="url" name="long_url" id="long_url" placeholder="https://example.com/very-long-url"
                     required />
+            </div>
+            <div class="input-group">
+                <label for="custom_id">Custom URL (optional)</label>
+                <input type="text" name="custom_id" id="custom_id" placeholder="my-custom-url" />
+                <small>Only letters, numbers, hyphens and underscores allowed (max 20 chars)</small>
             </div>
             <button type="submit">Shorten URL</button>
         </form>

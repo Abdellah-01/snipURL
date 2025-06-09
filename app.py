@@ -47,6 +47,7 @@ def snip_url():
 
     if request.method == 'POST':
         long_url = request.form['long_url'].strip()
+        custom_id = request.form.get('custom_id', '').strip()
 
         # Parse and validate URL
         parsed_url = urlparse(long_url)
@@ -62,13 +63,27 @@ def snip_url():
                 error = "URL domain does not exist"
             else:
                 urls = load_urls()
-                short_id = generate_short_id()
-                while short_id in urls:
+                
+                # If custom ID is provided
+                if custom_id:
+                    if custom_id in urls:
+                        error = "Custom URL already exists"
+                    elif not all(c in string.ascii_letters + string.digits + '-_' for c in custom_id):
+                        error = "Custom URL can only contain letters, numbers, hyphens and underscores"
+                    elif len(custom_id) > 20:
+                        error = "Custom URL must be 20 characters or less"
+                    else:
+                        short_id = custom_id
+                else:
+                    # Generate random ID if no custom ID provided
                     short_id = generate_short_id()
+                    while short_id in urls:
+                        short_id = generate_short_id()
 
-                urls[short_id] = long_url
-                save_urls(urls)
-                short_url = request.host_url + short_id
+                if not error:
+                    urls[short_id] = long_url
+                    save_urls(urls)
+                    short_url = request.host_url + short_id
 
     return render_template('index.html', short_url=short_url, error=error)
 
