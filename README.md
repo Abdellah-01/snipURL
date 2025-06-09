@@ -15,8 +15,6 @@
 
 ---
 
-## 📸 Demo
-
 ## 📷 Demo
 
 ![Snip URL Home Page - Screenshot](static\images\Screenshot1.png)
