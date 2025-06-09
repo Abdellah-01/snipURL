@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNIP URL - URL Shortener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --gray: #f5f5f5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            border-bottom: 1px solid var(--black);
+            position: sticky;
+            top: 0;
+            background-color: var(--white);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--black);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        .cta-button {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 0.8rem 1.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1px solid var(--black);
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: var(--white);
+            color: var(--black);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 5rem 5%;
+            border-bottom: 1px solid var(--black);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 5%;
+            border-bottom: 1px solid var(--black);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border: 1px solid var(--black);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 5%;
+            border-bottom: 1px solid var(--black);
+            background-color: var(--gray);
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 0 1.5rem;
+        }
+
+        .step-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            border: 2px solid var(--black);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 5rem 5%;
+            border-bottom: 1px solid var(--black);
+        }
+
+        .pricing-cards {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            border: 1px solid var(--black);
+            padding: 2rem;
+            width: 300px;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 5%;
+            text-align: center;
+            background-color: var(--gray);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--black);
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--white);
+                padding: 1rem 0;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            nav a {
+                padding: 1rem;
+                text-align: center;
+                border-top: 1px solid var(--black);
+            }
+
+            .cta-button {
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .pricing-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hamburger {
+            font-size: 2rem;
+            cursor: pointer;
+            display: none;
+            background: var(--white);
+            border: 1px solid var(--black);
+            border-radius: 4px;
+            padding: 0.4rem 0.8rem;
+            transition: background 0.3s ease;
+        }
+
+        .hamburger:hover {
+            background: var(--gray);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                height: 100vh;
+                width: 80%;
+                max-width: 300px;
+                background-color: var(--white);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                gap: 0rem;
+                padding: 2rem;
+                transition: left 0.3s ease;
+                z-index: 999;
+                border-right: 1px solid var(--black);
+            }
+
+            nav.active {
+                left: 0;
+            }
+
+            nav a {
+                width: 100%;
+                text-align: left;
+                padding: 0.8rem 0;
+                font-size: 1.1rem;
+                border: none;
+            }
+
+            .cta-button {
+                margin-top: 1rem;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                font-size: 1.6rem;
+            }
+            .header-left {
+                
+            justify-content: space-between;
+            width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <a href="#" class="logo">SNIP URL</a>
+            <div class="hamburger" onclick="toggleMenu()">☰</div>
+        </div>
+        <nav id="navbar">
+            <a href="#">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="/snip-url" class="cta-button">Try For Free</a>
+        </nav>
+    </header>    
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Shorten, Share, and Track Your Links</h1>
+        <p>The most powerful URL shortener to help you create memorable links, track clicks, and optimize your marketing
+            campaigns.</p>
+        <a href="/snip-url" class="cta-button">Get Started</a>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Powerful Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Link Shortening</h3>
+                <p>Create short, memorable URLs that are perfect for sharing anywhere.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Click Analytics</h3>
+                <p>Track how many clicks your links receive and where they're coming from.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Custom Domains</h3>
+                <p>Use your own domain to brand your shortened links.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="feature-card">
+                <div class="step-number">1</div>
+                <h3>Paste Your URL</h3>
+                <p>Enter any long URL you want to shorten.</p>
+            </div>
+            <div class="feature-card">
+                <div class="step-number">2</div>
+                <h3>Customize</h3>
+                <p>Optionally customize your link with a memorable alias.</p>
+            </div>
+            <div class="feature-card">
+                <div class="step-number">3</div>
+                <h3>Share</h3>
+                <p>Share your shortened link anywhere.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <h2 class="section-title">Simple Pricing</h2>
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <h3>Free</h3>
+                <div class="price">$0</div>
+                <p>Basic link shortening</p>
+                <p>Limited analytics</p><br>
+                <a href="/snip-url" class="cta-button">Get Started</a>
+            </div>
+            <div class="pricing-card">
+                <h3>Pro</h3>
+                <div class="price">$9/mo</div>
+                <p>Advanced analytics</p>
+                <p>Custom domains</p><br>
+                <a href="/snip-url" class="cta-button">Try For Free</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to shorten your links?</h2>
+        <p>Join thousands of businesses using SNIP URL to optimize their links.</p><br>
+        <a href="/snip-url" class="cta-button">Get Started Now</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 SNIP URL. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Hamburger -->
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById('navbar');
+            nav.classList.toggle('active');
+        }
+    </script>
+    
+</body>
+
+</html>
