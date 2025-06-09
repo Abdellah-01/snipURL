@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SnipURL - Elegant URL Shortener</title>
+    <title>Register - SnipURL</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <style>
         :root {
@@ -13,7 +13,6 @@
             --secondary: #222222;
             --dark: #000000;
             --light: #ffffff;
-            --success: #000000;
         }
 
         * {
@@ -35,7 +34,7 @@
 
         .container {
             width: 90%;
-            max-width: 800px;
+            max-width: 500px;
             margin: 2rem auto;
             padding: 2.5rem;
             background: white;
@@ -49,14 +48,7 @@
             color: var(--primary);
             margin-bottom: 1.5rem;
             font-weight: 600;
-            font-size: 2.5rem;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 2.5rem;
-            font-weight: 300;
-            font-size: 1.1rem;
+            font-size: 2rem;
         }
 
         .form-container {
@@ -78,7 +70,6 @@
             color: var(--dark);
         }
 
-        input[type="url"],
         input[type="text"],
         input[type="password"],
         input[type="email"] {
@@ -89,7 +80,6 @@
             transition: all 0.3s ease;
         }
 
-        input[type="url"]:focus,
         input[type="text"]:focus,
         input[type="password"]:focus,
         input[type="email"]:focus {
@@ -118,56 +108,21 @@
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
         }
 
-        .result-container {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background-color: #f8f9fa;
-            border-radius: 0;
-            border: 1px solid #000000;
+        .auth-links {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             gap: 1rem;
-            align-items: center;
-            animation: fadeIn 0.5s ease;
+            margin-top: 1rem;
         }
 
-        .result-title {
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        .short-url {
+        .auth-links a {
             color: var(--primary);
-            font-weight: 500;
             text-decoration: none;
-            word-break: break-all;
-            padding: 0.5rem 1rem;
-            background-color: white;
-            border-radius: 0;
-            border: 1px solid #000000;
-            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        .short-url:hover {
-            color: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-        }
-
-        .copy-btn {
-            background-color: var(--success);
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            border: 1px solid #000000;
-            border-radius: 0;
-            cursor: pointer;
-            color: white;
-            transition: background-color 0.3s ease;
-        }
-
-        .copy-btn:hover {
-            background-color: #333333;
+        .auth-links a:hover {
+            text-decoration: underline;
         }
 
         /* Notification Modal Styles */
@@ -206,91 +161,6 @@
             border: 1px solid #000000;
         }
 
-        .notification-icon {
-            font-size: 1.2rem;
-        }
-
-        .close-notification {
-            background: none;
-            border: none;
-            color: black;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-left: 10px;
-            padding: 0;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        footer {
-            margin-top: auto;
-            padding: 1.5rem;
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid #000000;
-            width: 100%;
-        }
-
-        .input-group small {
-            color: #666;
-            font-size: 0.8rem;
-            margin-top: -0.3rem;
-        }
-
-        #custom_id {
-            margin-top: 0.5rem;
-        }
-
-        .auth-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .auth-links a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .auth-links a:hover {
-            text-decoration: underline;
-        }
-
-        .user-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-info span {
-            font-weight: 500;
-        }
-
-        .user-info a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .user-info a:hover {
-            text-decoration: underline;
-        }
-
         @media (max-width: 600px) {
             .container {
                 padding: 1.5rem;
@@ -298,7 +168,7 @@
             }
 
             h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
 
             .notification {
@@ -306,56 +176,39 @@
                 right: 20px;
                 left: 20px;
             }
-
-            .user-info {
-                position: static;
-                justify-content: center;
-                margin-bottom: 1rem;
-            }
         }
     </style>
 </head>
 
 <body>
-    {% if username %}
-    <div class="user-info">
-        <span>Welcome, {{ username }}</span>
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </div>
-    {% endif %}
-
     <div class="container">
-        <h1>SnipURL</h1>
-        <p class="subtitle">Shorten your links with elegance and speed</p>
+        <h1>Register</h1>
 
         <form method="post" class="form-container">
             <div class="input-group">
-                <label for="long_url">Enter your long URL</label>
-                <input type="url" name="long_url" id="long_url" placeholder="https://example.com/very-long-url"
-                    required />
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" placeholder="Choose a username" required />
             </div>
             <div class="input-group">
-                <label for="custom_id">Custom URL (optional)</label>
-                <input type="text" name="custom_id" id="custom_id" placeholder="my-custom-url" />
-                <small>Only letters, numbers, hyphens and underscores allowed (max 20 chars)</small>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Enter your email" required />
             </div>
-            <button type="submit">Shorten URL</button>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Choose a password" required />
+            </div>
+            <div class="input-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm your password"
+                    required />
+            </div>
+            <button type="submit">Register</button>
         </form>
 
-        {% if short_url %}
-        <div class="result-container">
-            <p class="result-title">Your shortened URL:</p>
-            <a href="{{ short_url }}" class="short-url" id="shortUrl" target="_blank">{{ short_url }}</a>
-            <button class="copy-btn" onclick="copyToClipboard()">Copy URL</button>
-        </div>
-        {% endif %}
-
-        {% if not username %}
         <div class="auth-links">
+            <span>Already have an account?</span>
             <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('register') }}">Register</a>
         </div>
-        {% endif %}
     </div>
 
     <!-- Notification Modal -->
@@ -363,10 +216,6 @@
         <span id="notification-message"></span>
         <button class="close-notification" onclick="hideNotification()">×</button>
     </div>
-
-    <footer>
-        &copy; 2025 SnipURL | Abdellah.in
-    </footer>
 
     <script>
         // Notification functions
@@ -391,7 +240,7 @@
             notification.classList.remove('show');
         }
 
-        // Show error if exists
+        // Show flashed messages
         {% with messages = get_flashed_messages(with_categories = true) %}
         {% if messages %}
         {% for category, message in messages %}
@@ -401,31 +250,6 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-
-        {% if error %}
-        document.addEventListener('DOMContentLoaded', function () {
-            showNotification("{{ error }}", true);
-        });
-        {% endif %}
-
-        function copyToClipboard() {
-            const shortUrl = document.getElementById("shortUrl");
-            const range = document.createRange();
-            range.selectNode(shortUrl);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand("copy");
-            window.getSelection().removeAllRanges();
-
-            const copyBtn = document.querySelector(".copy-btn");
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => {
-                copyBtn.textContent = "Copy URL";
-            }, 2000);
-
-            // Show success notification
-            showNotification("URL copied to clipboard!", false, true);
-        }
     </script>
 </body>
 

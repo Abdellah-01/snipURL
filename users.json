@@ -1,0 +1,9 @@
+{
+    "Abdellah01": {
+        "email": "mailtoabdullah23@gmail.com",
+        "password": "scrypt:32768:8:1$2AUqB9gWJjypAYyP$9b4907349c76101ab51cf10341d365880cd75671a6a561331cb120ecaadbd020e7b1e22412603edf0ff3bd3b6e181ac92bd8c663986868b8896c3210679a55ba",
+        "urls": {
+            "AR01": "https://abdellah.in/"
+        }
+    }
+}
