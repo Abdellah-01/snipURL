@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>SnipURL - Elegant URL Shortener</title>
+    <title>Settings - SnipURL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -23,7 +23,6 @@
             --light: #fff;
             --success: #000;
         }
-
 
         .sidebar {
             position: fixed;
@@ -294,7 +293,7 @@
             margin: 18px;
         }
 
-        /* URL Shortener Styles */
+        /* Settings Page Specific Styles */
         .container {
             width: 90%;
             max-width: 800px;
@@ -378,58 +377,6 @@
             background-color: var(--secondary);
             transform: translateY(-2px);
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
-        }
-
-        .result-container {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background-color: #f8f9fa;
-            border-radius: 0;
-            border: 1px solid #000000;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            align-items: center;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .result-title {
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        .short-url {
-            color: var(--primary);
-            font-weight: 500;
-            text-decoration: none;
-            word-break: break-all;
-            padding: 0.5rem 1rem;
-            background-color: white;
-            border-radius: 0;
-            border: 1px solid #000000;
-            transition: all 0.3s ease;
-        }
-
-        .short-url:hover {
-            color: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-        }
-
-        .copy-btn {
-            background-color: var(--success);
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            border: 1px solid #000000;
-            border-radius: 0;
-            cursor: pointer;
-            color: white;
-            transition: background-color 0.3s ease;
-        }
-
-        .copy-btn:hover {
-            background-color: #333333;
         }
 
         /* Notification Modal Styles */
@@ -531,15 +478,6 @@
             text-decoration: underline;
         }
 
-        /* .user-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        } */
-
         .user-info span {
             font-weight: 500;
         }
@@ -593,7 +531,7 @@
         </div>
         <ul class="nav-list">
             <li>
-                <a href="#">
+                <a href="{{ url_for('snip_url') }}">
                     <i class='bx bx-grid-alt'></i>
                     <span class="links_name">Dashboard</span>
                 </a>
@@ -613,13 +551,12 @@
                 </a>
                 <span class="tooltip">View Links</span>
             </li>
-
             <li>
                 <a href="{{ url_for('settings') }}">
                     <i class='bx bx-cog'></i>
-                    <span class="links_name">Setting</span>
+                    <span class="links_name">Settings</span>
                 </a>
-                <span class="tooltip">Setting</span>
+                <span class="tooltip">Settings</span>
             </li>
             <li class="profile">
                 <a href="{{ url_for('logout') }}">
@@ -632,49 +569,41 @@
                     <i class='bx bx-log-out' id="log_out"></i>
                 </a>
             </li>
-
         </ul>
     </div>
     <section class="home-section">
         {% if username %}
         <div class="user-info">
             <span>Welcome, {{ username }}</span>
-            <!-- <a href="{{ url_for('logout') }}">Logout</a> -->
         </div>
         {% endif %}
 
         <div class="container">
-            <h1>SnipURL</h1>
-            <p class="subtitle">Shorten your links with elegance and speed</p>
+            <h1>Account Settings</h1>
+            <p class="subtitle">Update your personal information</p>
 
             <form method="post" class="form-container">
                 <div class="input-group">
-                    <label for="long_url">Enter your long URL</label>
-                    <input type="url" name="long_url" id="long_url" placeholder="https://example.com/very-long-url"
-                        required />
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" value="{{ username }}" required />
                 </div>
+
                 <div class="input-group">
-                    <label for="custom_id">Custom URL (optional)</label>
-                    <input type="text" name="custom_id" id="custom_id" placeholder="my-custom-url" />
-                    <small>Only letters, numbers, hyphens and underscores allowed (max 20 chars)</small>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" value="{{ email }}" required />
                 </div>
-                <button type="submit">Shorten URL</button>
+
+                <div class="input-group">
+                    <label>Password Change</label>
+                    <input type="password" name="current_password"
+                        placeholder="Current password (leave blank to keep current)" />
+                    <input type="password" name="new_password"
+                        placeholder="New password (leave blank to keep current)" />
+                    <input type="password" name="confirm_password" placeholder="Confirm new password" />
+                </div>
+
+                <button type="submit">Update Settings</button>
             </form>
-
-            {% if short_url %}
-            <div class="result-container">
-                <p class="result-title">Your shortened URL:</p>
-                <a href="{{ short_url }}" class="short-url" id="shortUrl" target="_blank">{{ short_url }}</a>
-                <button class="copy-btn" onclick="copyToClipboard()">Copy URL</button>
-            </div>
-            {% endif %}
-
-            {% if not username %}
-            <div class="auth-links">
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
-            </div>
-            {% endif %}
         </div>
 
         <!-- Notification Modal -->
@@ -698,11 +627,6 @@
             menuBtnChange();
         });
 
-        searchBtn.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
-            menuBtnChange();
-        });
-
         function menuBtnChange() {
             if (sidebar.classList.contains("open")) {
                 closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
@@ -711,9 +635,6 @@
             }
         }
 
-    </script>
-
-    <script>
         // Notification functions
         function showNotification(message, isError = false, isSuccess = false) {
             const notification = document.getElementById('notification');
@@ -742,35 +663,10 @@
         {% for category, message in messages %}
         document.addEventListener('DOMContentLoaded', function () {
             showNotification("{{ message }}", {{ 'true' if category == 'error' else 'false' }}, {{ 'true' if category == 'success' else 'false' }});
-                });
+        });
         {% endfor %}
         {% endif %}
         {% endwith %}
-
-        {% if error %}
-        document.addEventListener('DOMContentLoaded', function () {
-            showNotification("{{ error }}", true);
-        });
-        {% endif %}
-
-        function copyToClipboard() {
-            const shortUrl = document.getElementById("shortUrl");
-            const range = document.createRange();
-            range.selectNode(shortUrl);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand("copy");
-            window.getSelection().removeAllRanges();
-
-            const copyBtn = document.querySelector(".copy-btn");
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => {
-                copyBtn.textContent = "Copy URL";
-            }, 2000);
-
-            // Show success notification
-            showNotification("URL copied to clipboard!", false, true);
-        }
     </script>
 </body>
 

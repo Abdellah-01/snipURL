@@ -159,6 +159,59 @@ def snip_url():
 
     return render_template('index.html', short_url=short_url, error=error, username=session.get('username'))
 
+# Add this new route to app.py
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if 'username' not in session:
+        flash('Please login to access settings', 'error')
+        return redirect(url_for('login'))
+
+    users = load_users()
+    user_data = users[session['username']]
+    message = None
+
+    if request.method == 'POST':
+        new_username = request.form['username'].strip()
+        new_email = request.form['email'].strip()
+        current_password = request.form.get('current_password', '').strip()
+        new_password = request.form.get('new_password', '').strip()
+        confirm_password = request.form.get('confirm_password', '').strip()
+
+        # Validate username change
+        if new_username != session['username']:
+            if new_username in users:
+                flash('Username already exists', 'error')
+            else:
+                # Update username in session and users data
+                users[new_username] = users.pop(session['username'])
+                session['username'] = new_username
+                message = 'Username updated successfully'
+
+        # Validate email change
+        if new_email != user_data['email']:
+            users[session['username']]['email'] = new_email
+            message = 'Email updated successfully'
+
+        # Validate password change
+        if new_password:
+            if not check_password_hash(user_data['password'], current_password):
+                flash('Current password is incorrect', 'error')
+            elif new_password != confirm_password:
+                flash('New passwords do not match', 'error')
+            else:
+                users[session['username']]['password'] = generate_password_hash(new_password)
+                message = 'Password updated successfully'
+
+        if message:
+            save_users(users)
+            flash(message, 'success')
+
+        return redirect(url_for('settings'))
+
+    return render_template('settings.html', 
+                         username=session['username'],
+                         email=user_data['email'])
+
 @app.route('/<short_id>')
 def redirect_short_url(short_id):
     urls = load_urls()
