@@ -271,6 +271,7 @@
                 align-items: center;
             }
         }
+
         .header-left {
             display: flex;
             align-items: center;
@@ -340,13 +341,104 @@
             .logo {
                 font-size: 1.6rem;
             }
+
             .header-left {
-                
-            justify-content: space-between;
-            width: 100%;
+
+                justify-content: space-between;
+                width: 100%;
             }
         }
 
+        .pricing-section {
+            background: #fff;
+            padding: 60px 20px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #000;
+        }
+
+        .pricing-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .pricing-box {
+            background: #fff;
+            border: 1px solid #000;
+            /* border-radius: 12px; */
+            width: 300px;
+            padding: 30px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .highlighted {
+            /* border: 2px solid #00aeef; */
+            box-shadow: 0 0 12px rgb(0 0 0 / 30%);
+        }
+
+
+
+        .ribbon {
+            background: red;
+            color: #fff;
+            font-weight: 600;
+            padding: 8px 0;
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            font-size: 0.9rem;
+            outline: 1px solid red;
+        }
+
+        .plan-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .plan-price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0 20px;
+            color: #000;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px;
+        }
+
+        .plan-features li {
+            margin: 10px 0;
+            color: #444;
+        }
+
+        .plan-button {
+            background: #000;
+            color: #fff;
+            padding: 12px 20px;
+            display: inline-block;
+            /* border-radius: 6px; */
+            text-decoration: none;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .plan-button:hover {
+            background: #333;
+        }
     </style>
 </head>
 
@@ -364,7 +456,7 @@
             <a href="#pricing">Pricing</a>
             <a href="/snip-url" class="cta-button">Try For Free</a>
         </nav>
-    </header>    
+    </header>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -416,25 +508,60 @@
     </section>
 
     <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
+    <section class="pricing-section" id="pricing">
         <h2 class="section-title">Simple Pricing</h2>
-        <div class="pricing-cards">
-            <div class="pricing-card">
-                <h3>Free</h3>
-                <div class="price">$0</div>
-                <p>Basic link shortening</p>
-                <p>Limited analytics</p><br>
-                <a href="/snip-url" class="cta-button">Get Started</a>
+        <div class="pricing-container">
+
+            <!-- Premium Plan -->
+            <div class="pricing-box">
+                <h3 class="plan-title">Premium</h3>
+                <div class="plan-price">$89.95</div>
+                <ul class="plan-features">
+                    <li>All premium features</li>
+                    <li>Unlimited access</li>
+                    <li>Priority support</li>
+                    <li>Advanced analytics</li>
+                    <li>Team collaboration</li>
+                    <li>More integrations</li>
+                </ul>
+                <a href="#" class="plan-button">Start a Free Trial</a>
             </div>
-            <div class="pricing-card">
-                <h3>Pro</h3>
-                <div class="price">$9/mo</div>
-                <p>Advanced analytics</p>
-                <p>Custom domains</p><br>
-                <a href="/snip-url" class="cta-button">Try For Free</a>
+
+            <!-- Plus Plan (highlighted) -->
+            <div class="pricing-box highlighted">
+                <div class="ribbon">Our most valuable package!</div>
+                <h3 class="plan-title">Plus</h3>
+                <div class="plan-price">$49.95</div>
+                <ul class="plan-features">
+                    <li>All core features</li>
+                    <li>Unlimited URLs</li>
+                    <li>Basic analytics</li>
+                    <li>Email support</li>
+                    <li>—</li>
+                    <li>—</li>
+                </ul>
+                <a href="#" class="plan-button">Start a Free Trial</a>
             </div>
+
+            <!-- Basic Plan -->
+            <div class="pricing-box">
+                <h3 class="plan-title">Basic</h3>
+                <div class="plan-price">$19.95</div>
+                <ul class="plan-features">
+                    <li>Shorten URLs</li>
+                    <li>Up to 100 URLs/month</li>
+                    <li>—</li>
+                    <li>—</li>
+                    <li>—</li>
+                    <li>—</li>
+                </ul>
+                <a href="#" class="plan-button">Start a Free Trial</a>
+            </div>
+
         </div>
     </section>
+
+
 
     <!-- CTA Section -->
     <section class="cta-section">
@@ -455,7 +582,7 @@
             nav.classList.toggle('active');
         }
     </script>
-    
+
 </body>
 
 </html>
