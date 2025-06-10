@@ -164,8 +164,8 @@ def snip_url():
                         'clicks': 0,
                         'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     }
-                    urls[short_id] = long_url  # Keep global URLs simple
-                    user_urls[short_id] = url_data  # Store detailed data in user account
+                    urls[short_id] = long_url
+                    user_urls[short_id] = url_data
                     save_urls(urls)
                     users = load_users()
                     users[session['username']]['urls'] = user_urls
@@ -180,7 +180,6 @@ def redirect_short_url(short_id):
     users = load_users()
     
     if short_id in urls:
-        # Check if URL is active (for logged-in users)
         for username, user_data in users.items():
             if short_id in user_data.get('urls', {}):
                 url_data = user_data['urls'][short_id]
@@ -190,7 +189,6 @@ def redirect_short_url(short_id):
                         return redirect(url_for('view_links'))
                     return render_template('inactive.html'), 404
                 
-                # Increment click count if URL is active
                 if isinstance(url_data, dict):
                     user_data['urls'][short_id]['clicks'] = url_data.get('clicks', 0) + 1
                     save_users(users)
@@ -204,10 +202,9 @@ def view_links():
     users = load_users()
     user_data = users[session['username']]
     
-    # Prepare URLs data with additional information
     urls_data = []
     for short_id, url_info in user_data['urls'].items():
-        if isinstance(url_info, dict):  # New format with additional data
+        if isinstance(url_info, dict):
             urls_data.append({
                 'short_id': short_id,
                 'long_url': url_info['url'],
@@ -215,7 +212,7 @@ def view_links():
                 'clicks': url_info.get('clicks', 0),
                 'created_at': url_info.get('created_at', user_data.get('created_at', 'N/A'))
             })
-        else:  # Old format, convert to new
+        else:
             urls_data.append({
                 'short_id': short_id,
                 'long_url': url_info,
@@ -238,7 +235,6 @@ def toggle_url(short_id):
         if isinstance(users[username]['urls'][short_id], dict):
             users[username]['urls'][short_id]['active'] = not users[username]['urls'][short_id].get('active', True)
         else:
-            # Convert old format to new format with active status
             users[username]['urls'][short_id] = {
                 'url': users[username]['urls'][short_id],
                 'active': False,
@@ -251,6 +247,47 @@ def toggle_url(short_id):
         flash('URL not found', 'error')
     
     return redirect(url_for('view_links'))
+
+@app.route('/analytics')
+@login_required
+def analytics():
+    users = load_users()
+    user_data = users[session['username']]
+    
+    total_links = len(user_data['urls'])
+    total_clicks = 0
+    most_popular = {'url': '', 'clicks': 0}
+    active_links = 0
+    clicks_by_day = {}
+    
+    for short_id, url_info in user_data['urls'].items():
+        if isinstance(url_info, dict):
+            clicks = url_info.get('clicks', 0)
+            total_clicks += clicks
+            
+            if clicks > most_popular['clicks']:
+                most_popular = {
+                    'url': f"{request.host_url}{short_id}",
+                    'clicks': clicks
+                }
+            
+            if url_info.get('active', True):
+                active_links += 1
+            
+            created_date = url_info.get('created_at', '').split()[0]
+            clicks_by_day[created_date] = clicks_by_day.get(created_date, 0) + clicks
+    
+    # Sort clicks by day chronologically
+    sorted_dates = sorted(clicks_by_day.keys())
+    sorted_clicks = {date: clicks_by_day[date] for date in sorted_dates}
+    
+    return render_template('analytics.html',
+                         username=session['username'],
+                         total_links=total_links,
+                         total_clicks=total_clicks,
+                         active_links=active_links,
+                         most_popular=most_popular,
+                         clicks_by_day=sorted_clicks)
 
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
@@ -266,22 +303,18 @@ def settings():
         new_password = request.form.get('new_password', '').strip()
         confirm_password = request.form.get('confirm_password', '').strip()
 
-        # Validate username change
         if new_username != session['username']:
             if new_username in users:
                 flash('Username already exists', 'error')
             else:
-                # Update username in session and users data
                 users[new_username] = users.pop(session['username'])
                 session['username'] = new_username
                 message = 'Username updated successfully'
 
-        # Validate email change
         if new_email != user_data['email']:
             users[session['username']]['email'] = new_email
             message = 'Email updated successfully'
 
-        # Validate password change
         if new_password:
             if not check_password_hash(user_data['password'], current_password):
                 flash('Current password is incorrect', 'error')

@@ -593,14 +593,14 @@
         </div>
         <ul class="nav-list">
             <li>
-                <a href="#">
+                <a href="{{ url_for('snip_url') }}">
                     <i class='bx bx-grid-alt'></i>
                     <span class="links_name">Dashboard</span>
                 </a>
                 <span class="tooltip">Dashboard</span>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ url_for('analytics') }}">
                     <i class='bx bx-pie-chart-alt-2'></i>
                     <span class="links_name">Analytics</span>
                 </a>
@@ -613,13 +613,12 @@
                 </a>
                 <span class="tooltip">View Links</span>
             </li>
-
             <li>
                 <a href="{{ url_for('settings') }}">
                     <i class='bx bx-cog'></i>
-                    <span class="links_name">Setting</span>
+                    <span class="links_name">Settings</span>
                 </a>
-                <span class="tooltip">Setting</span>
+                <span class="tooltip">Settings</span>
             </li>
             <li class="profile">
                 <a href="{{ url_for('logout') }}">
@@ -632,7 +631,6 @@
                     <i class='bx bx-log-out' id="log_out"></i>
                 </a>
             </li>
-
         </ul>
     </div>
     <section class="home-section">
