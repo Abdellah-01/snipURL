@@ -6,6 +6,8 @@ import os
 from urllib.parse import urlparse
 import socket
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
@@ -50,6 +52,15 @@ def domain_exists(domain):
     except socket.gaierror:
         return False
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session:
+            flash('Please login to access this page', 'error')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/')
 def home():
     return render_template('landing.html')
@@ -74,7 +85,8 @@ def register():
             users[username] = {
                 'email': email,
                 'password': generate_password_hash(password),
-                'urls': {}
+                'urls': {},
+                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
             save_users(users)
             flash('Registration successful! Please login.', 'success')
@@ -106,11 +118,8 @@ def logout():
     return redirect(url_for('home'))
 
 @app.route('/snip-url', methods=['GET', 'POST'])
+@login_required
 def snip_url():
-    if 'username' not in session:
-        flash('Please login to shorten URLs', 'error')
-        return redirect(url_for('login'))
-
     short_url = None
     error = None
 
@@ -149,8 +158,14 @@ def snip_url():
                         short_id = generate_short_id()
 
                 if not error:
-                    urls[short_id] = long_url
-                    user_urls[short_id] = long_url
+                    url_data = {
+                        'url': long_url,
+                        'active': True,
+                        'clicks': 0,
+                        'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    }
+                    urls[short_id] = long_url  # Keep global URLs simple
+                    user_urls[short_id] = url_data  # Store detailed data in user account
                     save_urls(urls)
                     users = load_users()
                     users[session['username']]['urls'] = user_urls
@@ -159,13 +174,87 @@ def snip_url():
 
     return render_template('index.html', short_url=short_url, error=error, username=session.get('username'))
 
-# Add this new route to app.py
-@app.route('/settings', methods=['GET', 'POST'])
-def settings():
-    if 'username' not in session:
-        flash('Please login to access settings', 'error')
-        return redirect(url_for('login'))
+@app.route('/<short_id>')
+def redirect_short_url(short_id):
+    urls = load_urls()
+    users = load_users()
+    
+    if short_id in urls:
+        # Check if URL is active (for logged-in users)
+        for username, user_data in users.items():
+            if short_id in user_data.get('urls', {}):
+                url_data = user_data['urls'][short_id]
+                if isinstance(url_data, dict) and not url_data.get('active', True):
+                    if 'username' in session and session['username'] == username:
+                        flash('This URL is currently inactive', 'error')
+                        return redirect(url_for('view_links'))
+                    return render_template('inactive.html'), 404
+                
+                # Increment click count if URL is active
+                if isinstance(url_data, dict):
+                    user_data['urls'][short_id]['clicks'] = url_data.get('clicks', 0) + 1
+                    save_users(users)
+        
+        return redirect(urls[short_id])
+    return render_template('404.html'), 404
 
+@app.route('/view-links')
+@login_required
+def view_links():
+    users = load_users()
+    user_data = users[session['username']]
+    
+    # Prepare URLs data with additional information
+    urls_data = []
+    for short_id, url_info in user_data['urls'].items():
+        if isinstance(url_info, dict):  # New format with additional data
+            urls_data.append({
+                'short_id': short_id,
+                'long_url': url_info['url'],
+                'active': url_info.get('active', True),
+                'clicks': url_info.get('clicks', 0),
+                'created_at': url_info.get('created_at', user_data.get('created_at', 'N/A'))
+            })
+        else:  # Old format, convert to new
+            urls_data.append({
+                'short_id': short_id,
+                'long_url': url_info,
+                'active': True,
+                'clicks': 0,
+                'created_at': user_data.get('created_at', 'N/A')
+            })
+    
+    return render_template('view_links.html', 
+                         username=session['username'],
+                         urls=urls_data)
+
+@app.route('/toggle-url/<short_id>')
+@login_required
+def toggle_url(short_id):
+    users = load_users()
+    username = session['username']
+    
+    if short_id in users[username]['urls']:
+        if isinstance(users[username]['urls'][short_id], dict):
+            users[username]['urls'][short_id]['active'] = not users[username]['urls'][short_id].get('active', True)
+        else:
+            # Convert old format to new format with active status
+            users[username]['urls'][short_id] = {
+                'url': users[username]['urls'][short_id],
+                'active': False,
+                'clicks': 0,
+                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+        save_users(users)
+        flash('URL status updated', 'success')
+    else:
+        flash('URL not found', 'error')
+    
+    return redirect(url_for('view_links'))
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
     users = load_users()
     user_data = users[session['username']]
     message = None
@@ -211,14 +300,6 @@ def settings():
     return render_template('settings.html', 
                          username=session['username'],
                          email=user_data['email'])
-
-@app.route('/<short_id>')
-def redirect_short_url(short_id):
-    urls = load_urls()
-    long_url = urls.get(short_id)
-    if long_url:
-        return redirect(long_url)
-    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     app.run(debug=True)

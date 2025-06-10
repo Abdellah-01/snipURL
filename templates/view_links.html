@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Settings - SnipURL</title>
+    <title>My Links - SnipURL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -23,6 +23,7 @@
             --light: #fff;
             --success: #000;
         }
+
 
         .sidebar {
             position: fixed;
@@ -293,10 +294,10 @@
             margin: 18px;
         }
 
-        /* Settings Page Specific Styles */
+        /* Container Styles */
         .container {
             width: 90%;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 2rem auto;
             padding: 2.5rem;
             background: white;
@@ -320,63 +321,105 @@
             font-size: 1.1rem;
         }
 
-        .form-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        /* Links Table Styles */
+        .links-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: white;
+            border: 1px solid #000000;
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            text-align: left;
-        }
-
-        label {
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        input[type="url"],
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
+        .links-table th,
+        .links-table td {
             padding: 1rem;
-            border: 1px solid #000000;
-            border-radius: 0;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            text-align: left;
+            border-bottom: 1px solid #000000;
         }
 
-        input[type="url"]:focus,
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus {
-            border-color: var(--primary-light);
-            outline: none;
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
-        }
-
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: 1px solid #000000;
-            padding: 1rem 2rem;
-            font-size: 1rem;
+        .links-table th {
+            background-color: #f8f9fa;
             font-weight: 500;
-            border-radius: 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        button:hover {
-            background-color: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+        .links-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .short-url-cell {
+            /* max-width: 150px; */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .status-toggle {
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            border-radius: 15px;
+            background: #ddd;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .status-toggle.active {
+            background: #4CAF50;
+        }
+
+        .status-toggle::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .status-toggle.active::after {
+            transform: translateX(30px);
+        }
+
+        .status-text {
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        .active-text {
+            color: #4CAF50;
+        }
+
+        .inactive-text {
+            color: #F44336;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #000000;
+            background: white;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #000000;
+            color: white;
+        }
+
+        .copy-btn {
+            background: #000000;
+            color: white;
+        }
+
+        .no-links {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
         }
 
         /* Notification Modal Styles */
@@ -451,53 +494,13 @@
             width: 100%;
         }
 
-        .input-group small {
-            color: #666;
-            font-size: 0.8rem;
-            margin-top: -0.3rem;
-        }
-
-        #custom_id {
-            margin-top: 0.5rem;
-        }
-
-        .auth-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .auth-links a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .auth-links a:hover {
-            text-decoration: underline;
-        }
-
-        .user-info span {
-            font-weight: 500;
-        }
-
-        .user-info a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .user-info a:hover {
-            text-decoration: underline;
-        }
-
         @media (max-width: 420px) {
             .sidebar li .tooltip {
                 display: none;
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
                 padding: 1.5rem;
                 width: 95%;
@@ -511,6 +514,12 @@
                 width: calc(100% - 40px);
                 right: 20px;
                 left: 20px;
+            }
+
+            .links-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
             }
 
             .user-info {
@@ -536,13 +545,6 @@
                     <span class="links_name">Dashboard</span>
                 </a>
                 <span class="tooltip">Dashboard</span>
-            </li>
-            <li>
-                <a href="#">
-                    <i class='bx bx-pie-chart-alt-2'></i>
-                    <span class="links_name">Analytics</span>
-                </a>
-                <span class="tooltip">Analytics</span>
             </li>
             <li>
                 <a href="{{ url_for('view_links') }}">
@@ -579,31 +581,66 @@
         {% endif %}
 
         <div class="container">
-            <h1>Account Settings</h1>
-            <p class="subtitle">Update your personal information</p>
+            <h1>My Links</h1>
+            <p class="subtitle">Manage your shortened URLs</p>
 
-            <form method="post" class="form-container">
-                <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" value="{{ username }}" required />
-                </div>
-
-                <div class="input-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" value="{{ email }}" required />
-                </div>
-
-                <div class="input-group">
-                    <label>Password Change</label>
-                    <input type="password" name="current_password"
-                        placeholder="Current password (leave blank to keep current)" />
-                    <input type="password" name="new_password"
-                        placeholder="New password (leave blank to keep current)" />
-                    <input type="password" name="confirm_password" placeholder="Confirm new password" />
-                </div>
-
-                <button type="submit">Update Settings</button>
-            </form>
+            {% if urls %}
+            <table class="links-table">
+                <thead>
+                    <tr>
+                        <th>Short URL</th>
+                        <th>Original URL</th>
+                        <th>Status</th>
+                        <th>Clicks</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for url in urls %}
+                    <tr>
+                        <td class="short-url-cell">
+                            <a href="{{ request.host_url }}{{ url.short_id }}" target="_blank">
+                                {{ request.host_url }}{{ url.short_id }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url.long_url }}" target="_blank" title="{{ url.long_url }}">
+                                {{ url.long_url|truncate(40, True) }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="status-toggle {% if url.active %}active{% endif %}"
+                                onclick="window.location.href='{{ url_for('toggle_url', short_id=url.short_id) }}'">
+                            </div>
+                            <span class="status-text {% if url.active %}active-text{% else %}inactive-text{% endif %}">
+                                {% if url.active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ url.clicks }}</td>
+                        <td>{{ url.created_at }}</td>
+                        <td>
+                            <button class="action-btn copy-btn"
+                                onclick="copyToClipboard('{{ request.host_url }}{{ url.short_id }}')">
+                                Copy
+                            </button>
+                            <button class="action-btn"
+                                onclick="window.location.href='{{ url_for('snip_url') }}?edit={{ url.short_id }}'">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-links">
+                <p>You haven't created any shortened URLs yet.</p>
+                <a href="{{ url_for('snip_url') }}" class="action-btn" style="display: inline-block; margin-top: 1rem;">
+                    Create Your First Link
+                </a>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Notification Modal -->
@@ -618,9 +655,9 @@
     </section>
 
     <script>
+        // Sidebar functionality
         let sidebar = document.querySelector(".sidebar");
         let closeBtn = document.querySelector("#btn");
-        let searchBtn = document.querySelector(".bx-search");
 
         closeBtn.addEventListener("click", () => {
             sidebar.classList.toggle("open");
@@ -646,7 +683,6 @@
             if (isSuccess) className += ' success';
             notification.className = className;
 
-            // Auto-hide after 5 seconds
             setTimeout(() => {
                 hideNotification();
             }, 5000);
@@ -657,7 +693,16 @@
             notification.classList.remove('show');
         }
 
-        // Show error if exists
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('URL copied to clipboard!', false, true);
+            }).catch(err => {
+                showNotification('Failed to copy URL', true);
+            });
+        }
+
+        // Show flashed messages
         {% with messages = get_flashed_messages(with_categories = true) %}
         {% if messages %}
         {% for category, message in messages %}
