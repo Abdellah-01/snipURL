@@ -573,6 +573,29 @@
                 margin-bottom: 1rem;
             }
         }
+
+        .cancel-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            margin-left: 1rem;
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid #000000;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cancel-btn:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 
@@ -634,21 +657,34 @@
         {% endif %}
 
         <div class="container">
-            <h1>SnipURL</h1>
-            <p class="subtitle">Shorten your links with elegance and speed</p>
+            <h1>{% if edit_id %}Edit URL{% else %}SnipURL{% endif %}</h1>
+            <p class="subtitle">
+                {% if edit_id %}
+                Update your shortened link
+                {% else %}
+                Shorten your links with elegance and speed
+                {% endif %}
+            </p>
 
             <form method="post" class="form-container">
                 <div class="input-group">
                     <label for="long_url">Enter your long URL</label>
                     <input type="url" name="long_url" id="long_url" placeholder="https://example.com/very-long-url"
-                        required />
+                        value="{{ edit_url if edit_url }}" required />
                 </div>
                 <div class="input-group">
                     <label for="custom_id">Custom URL (optional)</label>
-                    <input type="text" name="custom_id" id="custom_id" placeholder="my-custom-url" />
+                    <input type="text" name="custom_id" id="custom_id" placeholder="my-custom-url"
+                        value="{{ edit_id if edit_id }}" />
                     <small>Only letters, numbers, hyphens and underscores allowed (max 20 chars)</small>
                 </div>
-                <button type="submit">Shorten URL</button>
+                <button type="submit">
+                    {% if edit_id %}Save Changes{% else %}Shorten URL{% endif %}
+                </button>
+
+                {% if edit_id %}
+                <a href="{{ url_for('view_links') }}" class="cancel-btn">Cancel</a>
+                {% endif %}
             </form>
 
             {% if short_url %}

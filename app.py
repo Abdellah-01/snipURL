@@ -8,6 +8,7 @@ import socket
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from functools import wraps
+from urllib.parse import unquote
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
@@ -117,12 +118,23 @@ def logout():
     flash('You have been logged out', 'success')
     return redirect(url_for('home'))
 
+# Update the snip_url route to handle editing
 @app.route('/snip-url', methods=['GET', 'POST'])
 @login_required
 def snip_url():
     short_url = None
     error = None
+    edit_id = request.args.get('edit', '').strip()
+    edit_data = None
 
+    users = load_users()
+    user_urls = users[session['username']]['urls']
+    
+    if edit_id and edit_id in user_urls:
+        edit_data = user_urls[edit_id]
+        if isinstance(edit_data, dict):
+            edit_data = edit_data['url']
+    
     if request.method == 'POST':
         long_url = request.form['long_url'].strip()
         custom_id = request.form.get('custom_id', '').strip()
@@ -141,10 +153,9 @@ def snip_url():
                 error = "URL domain does not exist"
             else:
                 urls = load_urls()
-                user_urls = load_users()[session['username']]['urls']
                 
                 if custom_id:
-                    if custom_id in urls:
+                    if custom_id in urls and (not edit_id or custom_id != edit_id):
                         error = "Custom URL already exists"
                     elif not all(c in string.ascii_letters + string.digits + '-_' for c in custom_id):
                         error = "Custom URL can only contain letters, numbers, hyphens and underscores"
@@ -153,9 +164,12 @@ def snip_url():
                     else:
                         short_id = custom_id
                 else:
-                    short_id = generate_short_id()
-                    while short_id in urls:
+                    if edit_id:
+                        short_id = edit_id
+                    else:
                         short_id = generate_short_id()
+                        while short_id in urls:
+                            short_id = generate_short_id()
 
                 if not error:
                     url_data = {
@@ -164,15 +178,35 @@ def snip_url():
                         'clicks': 0,
                         'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     }
+                    
+                    # If editing, remove old entry first
+                    if edit_id and edit_id in urls:
+                        del urls[edit_id]
+                        if edit_id in user_urls:
+                            url_data['clicks'] = user_urls[edit_id].get('clicks', 0)
+                            url_data['active'] = user_urls[edit_id].get('active', True)
+                            url_data['created_at'] = user_urls[edit_id].get('created_at', 
+                                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                            del user_urls[edit_id]
+                    
                     urls[short_id] = long_url
                     user_urls[short_id] = url_data
                     save_urls(urls)
-                    users = load_users()
                     users[session['username']]['urls'] = user_urls
                     save_users(users)
-                    short_url = request.host_url + short_id
+                    
+                    if edit_id:
+                        flash('URL updated successfully!', 'success')
+                        return redirect(url_for('view_links'))
+                    else:
+                        short_url = request.host_url + short_id
 
-    return render_template('index.html', short_url=short_url, error=error, username=session.get('username'))
+    return render_template('index.html', 
+                         short_url=short_url, 
+                         error=error, 
+                         username=session.get('username'),
+                         edit_id=edit_id,
+                         edit_url=unquote(edit_data) if edit_data else None)
 
 @app.route('/<short_id>')
 def redirect_short_url(short_id):

@@ -404,6 +404,8 @@
             cursor: pointer;
             margin-right: 5px;
             transition: all 0.3s;
+            text-decoration: none;
+            color: black;
         }
 
         .action-btn:hover {
@@ -628,7 +630,7 @@
                         <td>{{ url.created_at }}</td>
                         <td>
                             <button class="action-btn copy-btn"
-                                onclick="copyToClipboard('{{ request.host_url }}{{ url.short_id }}')">
+                                onclick="copyToClipboard(this, '{{ request.host_url }}{{ url.short_id }}')">
                                 Copy
                             </button>
                             <button class="action-btn"
@@ -700,13 +702,36 @@
             notification.classList.remove('show');
         }
 
-        // Copy to clipboard function
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification('URL copied to clipboard!', false, true);
-            }).catch(err => {
-                showNotification('Failed to copy URL', true);
-            });
+        // Copy to clipboard function - improved version
+        function copyToClipboard(button, text) {
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';  // Prevent scrolling to bottom
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                // Execute the copy command
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    // Change button text temporarily
+                    button.textContent = 'Copied!';
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                    }, 2000);
+
+                    // Show notification
+                    showNotification('URL copied to clipboard!', false, true);
+                } else {
+                    showNotification('Failed to copy URL', true);
+                }
+            } catch (err) {
+                showNotification('Error copying URL: ' + err, true);
+            }
+
+            // Remove the textarea
+            document.body.removeChild(textarea);
         }
 
         // Show flashed messages
