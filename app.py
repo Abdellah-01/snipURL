@@ -87,7 +87,7 @@ def register():
                 'email': email,
                 'password': generate_password_hash(password),
                 'urls': {},
-                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                'created_at': datetime.now().strftime("%d %b %Y, %H:%M:%S")
             }
             save_users(users)
             flash('Registration successful! Please login.', 'success')
@@ -176,7 +176,7 @@ def snip_url():
                         'url': long_url,
                         'active': True,
                         'clicks': 0,
-                        'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        'created_at': datetime.now().strftime("%d %b %Y, %H:%M:%S")
                     }
                     
                     # If editing, remove old entry first
@@ -186,7 +186,7 @@ def snip_url():
                             url_data['clicks'] = user_urls[edit_id].get('clicks', 0)
                             url_data['active'] = user_urls[edit_id].get('active', True)
                             url_data['created_at'] = user_urls[edit_id].get('created_at', 
-                                datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                                datetime.now().strftime("%d %b %Y, %H:%M:%S"))
                             del user_urls[edit_id]
                     
                     urls[short_id] = long_url
@@ -273,7 +273,7 @@ def toggle_url(short_id):
                 'url': users[username]['urls'][short_id],
                 'active': False,
                 'clicks': 0,
-                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                'created_at': datetime.now().strftime("%d %b %Y, %H:%M:%S")
             }
         save_users(users)
         flash('URL status updated', 'success')
@@ -308,11 +308,17 @@ def analytics():
             if url_info.get('active', True):
                 active_links += 1
             
-            created_date = url_info.get('created_at', '').split()[0]
+            created_at_str = url_info.get('created_at', '')
+            try:
+                dt = datetime.strptime(created_at_str, "%d %b %Y, %H:%M:%S")
+                created_date = dt.strftime("%d %b %Y")  # e.g., "10 Jun 2025"
+            except ValueError:
+                created_date = created_at_str.split()[0]  # fallback
+
             clicks_by_day[created_date] = clicks_by_day.get(created_date, 0) + clicks
-    
+
     # Sort clicks by day chronologically
-    sorted_dates = sorted(clicks_by_day.keys())
+    sorted_dates = sorted(clicks_by_day.keys(), key=lambda x: datetime.strptime(x, "%d %b %Y"))
     sorted_clicks = {date: clicks_by_day[date] for date in sorted_dates}
     
     return render_template('analytics.html',

@@ -530,6 +530,108 @@
                 margin-bottom: 1rem;
             }
         }
+
+        <style>
+
+        /* Updated Table and Button Styles */
+        .links-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* Ensures consistent column widths */
+        }
+
+        .status-container {
+            display: flex;
+        }
+
+        /* Set specific column widths */
+        .links-table th:nth-child(1),
+        .links-table td:nth-child(1) {
+            width: 25%;
+            /* Short URL */
+        }
+
+        .links-table th:nth-child(2),
+        .links-table td:nth-child(2) {
+            width: 30%;
+            /* Original URL */
+        }
+
+        .links-table th:nth-child(3),
+        .links-table td:nth-child(3) {
+            width: 15%;
+            /* Status */
+        }
+
+        .links-table th:nth-child(4),
+        .links-table td:nth-child(4) {
+            width: 10%;
+            /* Clicks */
+            text-align: center;
+        }
+
+        .links-table th:nth-child(5),
+        .links-table td:nth-child(5) {
+            width: 25%;
+            /* Created */
+        }
+
+        .links-table th:nth-child(6),
+        .links-table td:nth-child(6) {
+            width: 15%;
+            /* Actions - increased width */
+            overflow: visible;
+            /* Allow buttons to be fully visible */
+        }
+
+        /* Action buttons container */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            width: 100%;
+        }
+
+        /* Button styles */
+        .action-btn {
+            padding: 0.4rem 0.6rem;
+            /* More compact padding */
+            font-size: 0.8rem;
+            /* Slightly smaller font */
+            white-space: nowrap;
+            flex: 1;
+            /* Buttons share equal space */
+            min-width: 60px;
+            /* Minimum width for readability */
+            text-align: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+
+            .links-table th:nth-child(6),
+            .links-table td:nth-child(6) {
+                width: 20%;
+                /* More space for actions on mobile */
+            }
+
+            .action-btn {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-buttons {
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
     </style>
 </head>
 
@@ -608,8 +710,9 @@
                 <tbody>
                     {% for url in urls %}
                     <tr>
-                        <td class="short-url-cell">
-                            <a href="{{ request.host_url }}{{ url.short_id }}" target="_blank">
+                        <td>
+                            <a href="{{ request.host_url }}{{ url.short_id }}" target="_blank"
+                                title="{{ request.host_url }}{{ url.short_id }}">
                                 {{ request.host_url }}{{ url.short_id }}
                             </a>
                         </td>
@@ -619,24 +722,29 @@
                             </a>
                         </td>
                         <td>
-                            <div class="status-toggle {% if url.active %}active{% endif %}"
-                                onclick="window.location.href='{{ url_for('toggle_url', short_id=url.short_id) }}'">
+                            <div class="status-container">
+                                <div class="status-toggle {% if url.active %}active{% endif %}"
+                                    onclick="window.location.href='{{ url_for('toggle_url', short_id=url.short_id) }}'">
+                                </div>
+                                <span
+                                    class="status-text {% if url.active %}active-text{% else %}inactive-text{% endif %}">
+                                    {% if url.active %}Active{% else %}Inactive{% endif %}
+                                </span>
                             </div>
-                            <span class="status-text {% if url.active %}active-text{% else %}inactive-text{% endif %}">
-                                {% if url.active %}Active{% else %}Inactive{% endif %}
-                            </span>
                         </td>
                         <td>{{ url.clicks }}</td>
                         <td>{{ url.created_at }}</td>
                         <td>
-                            <button class="action-btn copy-btn"
-                                onclick="copyToClipboard(this, '{{ request.host_url }}{{ url.short_id }}')">
-                                Copy
-                            </button>
-                            <button class="action-btn"
-                                onclick="window.location.href='{{ url_for('snip_url') }}?edit={{ url.short_id }}'">
-                                Edit
-                            </button>
+                            <div class="action-buttons">
+                                <button class="action-btn copy-btn"
+                                    onclick="copyToClipboard(this, '{{ request.host_url }}{{ url.short_id }}')">
+                                    Copy
+                                </button>
+                                <button class="action-btn edit-btn"
+                                    onclick="window.location.href='{{ url_for('snip_url') }}?edit={{ url.short_id }}'">
+                                    Edit
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
